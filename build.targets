@@ -1,0 +1,7 @@
+# A successful build produces the following files:
+flavor/target/lib-flavor-*-with-dependencies.jar
+flavor/target/lib-flavor-*-dependencies.zip
+flavor/target/lib-flavor-*.jar
+flavor/target/lib-flavor-*-javadoc.zip
+flavor-integration/target/flavor-integration-*.jar
+flavor-integration/target/flavor-integration-*-with-dependencies.jar
