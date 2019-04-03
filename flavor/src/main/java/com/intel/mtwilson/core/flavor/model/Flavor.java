@@ -14,6 +14,8 @@ import com.intel.mtwilson.jackson.bouncycastle.BouncyCastleModule;
 import com.intel.mtwilson.jackson.validation.ValidationModule;
 import com.intel.mtwilson.jaxrs2.provider.JacksonObjectMapperProvider;
 import com.intel.mtwilson.core.common.model.PcrIndex;
+
+import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -23,17 +25,21 @@ import java.util.Map;
 public class Flavor {
     private Meta meta;
     private Validity validity;
+    private Bios bios;
     private Hardware hardware;
     private Map<DigestAlgorithm, Map<PcrIndex, PcrEx>> pcrs;
     private External external;
+    private Software software;
 
     public Flavor() {}
-    
-    public Flavor(Meta meta, Hardware hardware, Map<DigestAlgorithm, Map<PcrIndex, PcrEx>> pcrs, External external) {
+
+    public Flavor(Meta meta, Bios bios, Hardware hardware, Map<DigestAlgorithm, Map<PcrIndex, PcrEx>> pcrs, External external, Software software) {
         this.meta = meta;
+        this.bios = bios;
         this.hardware = hardware;
         this.pcrs = pcrs;
         this.external = external;
+        this.software = software;
     }
     
     
@@ -61,6 +67,14 @@ public class Flavor {
         this.hardware = hardware;
     }
 
+    public Bios getBios() {
+        return bios;
+    }
+
+    public void setBios(Bios bios) {
+        this.bios = bios;
+    }
+
     public Map<DigestAlgorithm, Map<PcrIndex, PcrEx>> getPcrs() {
         return pcrs;
     }
@@ -76,7 +90,15 @@ public class Flavor {
     public void setExternal(External external) {
         this.external = external;
     }
-    
+
+    public Software getSoftware() {
+        return software;
+    }
+
+    public void setSoftware(Software software) {
+        this.software = software;
+    }
+
     public static String serialize(Flavor flavor) throws JsonProcessingException {
         Extensions.register(Module.class, BouncyCastleModule.class);
         Extensions.register(Module.class, ValidationModule.class);
@@ -89,13 +111,21 @@ public class Flavor {
             throw ex;
         }        
     }
-    
-    
+
+    public static Flavor deserialize(String flavor) throws IOException {
+        Extensions.register(Module.class, BouncyCastleModule.class);
+        Extensions.register(Module.class, ValidationModule.class);
+        ObjectMapper mapper = JacksonObjectMapperProvider.createDefaultMapper();
+        mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+        return mapper.readValue(flavor, Flavor.class);
+    }
+
     @Override
     public String toString() {
         return "Pojo [hardware - " + (hardware != null ? hardware.toString() : "") + 
                 ", validity - " + (validity != null ? validity.toString() : "")  + 
-                ", meta - " + (meta != null ? meta.toString() : "")  + 
+                ", bios - " + (bios != null ? bios.toString() : "")  +
+                ", meta - " + (meta != null ? meta.toString() : "")  +
                 ", external - " + (external != null ? external.toString() : "") + "]";
     }
 }

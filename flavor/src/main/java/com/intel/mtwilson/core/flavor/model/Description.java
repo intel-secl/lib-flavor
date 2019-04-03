@@ -4,6 +4,8 @@
  */
 package com.intel.mtwilson.core.flavor.model;
 
+import com.intel.dcsg.cpg.crypto.DigestAlgorithm;
+
 /**
  * 
  * @author ssbangal
@@ -22,6 +24,8 @@ public class Description {
     private String tpmVersion;
     private String hardwareUuid;
     private String comment;
+    private String tbootInstalled;
+    private DigestAlgorithm digestAlgorithm;
 
     public String getFlavorPart() {
         return flavorPart;
@@ -128,7 +132,22 @@ public class Description {
         this.hardwareUuid = hardwareUuid;
     }
 
-    
+    public String getTbootInstalled() {
+        return tbootInstalled;
+    }
+
+    public void setTbootInstalled(String tbootInstalled) {
+        this.tbootInstalled = tbootInstalled;
+    }
+
+    public DigestAlgorithm getDigestAlgorithm() {
+        return digestAlgorithm;
+    }
+
+    public void setDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
+        this.digestAlgorithm = digestAlgorithm;
+    }
+
     @Override
     public String toString() {
         return "Pojo [flavorPart - " + (flavorPart != null ? flavorPart : "")  + 
@@ -137,7 +156,9 @@ public class Description {
                 ", bios_name - " + (biosName != null ? biosName : "")  + 
                 ", comment - " + (comment != null ? comment : "") + 
                 ", bios_version - " + (biosVersion != null ? biosVersion : "")  + 
-                ", os_version - " + (osVersion != null ? osVersion : "")  + "]";
+                ", os_version - " + (osVersion != null ? osVersion : "")  + "]" +
+                ", tbootInstalled - " + (tbootInstalled != null ? tbootInstalled : "")  + "]" +
+                ", digest_algorithm - " + (digestAlgorithm != null ? digestAlgorithm.algorithm() : "")  + "]";
     }
 }
 

@@ -14,6 +14,8 @@ public class Feature {
     private AES_NI AES_NI;
     private TXT TXT;
     private TPM TPM;
+    private CBNT CBNT;
+    private SUEFI SUEFI;
 
     public AES_NI getAES_NI() {
         return AES_NI;
@@ -39,9 +41,26 @@ public class Feature {
         this.TXT = TXT;
     }
 
+    public Feature.CBNT getCBNT() {
+        return CBNT;
+    }
+
+    public void setCBNT(Feature.CBNT CBNT) {
+        this.CBNT = CBNT;
+    }
+
+    public Feature.SUEFI getSUEFI() {
+        return SUEFI;
+    }
+
+    public void setSUEFI(Feature.SUEFI SUEFI) {
+        this.SUEFI = SUEFI;
+    }
+
     @Override
     public String toString() {
-        return "ClassPojo [TPM - " + (TPM != null ? TPM : "") + ", TXT - " + (TXT != null ? TXT : "") + ", AES-NI - " + (AES_NI != null ? AES_NI : "") + "]";
+        return "ClassPojo [TPM - " + (TPM != null ? TPM : "") + ", TXT - " + (TXT != null ? TXT : "") + ", AES-NI - "
+                + (AES_NI != null ? AES_NI : "") + ", CBNT - " + (CBNT != null ? CBNT : "") + ", SUEFI - " + (SUEFI != null ? SUEFI : "") + "]";
     }
 
     public static class TXT {
@@ -115,4 +134,47 @@ public class Feature {
         }
     }
 
+    public static class CBNT {
+        private boolean enabled;
+        private String profile;
+
+        public boolean getEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
+
+        public String getProfile() {
+            return profile;
+        }
+
+        public void setProfile(String profile) {
+            this.profile = profile;
+        }
+
+        @Override
+
+        public String toString() {
+            return "Pojo [enabled - " + enabled + ", profile - " + profile +"]";
+        }
+    }
+
+    public static class SUEFI {
+        private boolean enabled;
+
+        public boolean getEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
+
+        @Override
+        public String toString() {
+            return "Pojo [enabled - " + enabled + "]";
+        }
+    }
 }

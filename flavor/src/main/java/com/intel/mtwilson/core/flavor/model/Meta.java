@@ -4,18 +4,18 @@
  */
 package com.intel.mtwilson.core.flavor.model;
 
-
 /**
- * 
+ *
  * @author ssbangal
  */
 public class Meta {
+    public static String ISL_MEASUREMENT_SCHEMA = "lib:wml:measurements:1.0";
     private Schema schema;
     private String id;
     private Author author;
     private String realm;
+    private Description description;
     private String vendor;
-    private Description description;  
 
     public Schema getSchema() {
         return schema;
@@ -49,15 +49,6 @@ public class Meta {
         this.realm = realm;
     }
 
-    public String getVendor() {
-        return vendor;
-    }
-
-    public void setVendor(String vendor) {
-        this.vendor = vendor;
-    }
-        
-
     public Description getDescription() {
         return description;
     }
@@ -66,14 +57,12 @@ public class Meta {
         this.description = description;
     }
 
-    
-    @Override
-    public String toString() {
-        return "Meta [schema - " + (schema != null ? schema.toString() : "") + 
-                ", id - " + (id != null ? id : "") + 
-                ", author - " + (author != null ? author.toString() : "") + 
-                ", realm - " + (realm != null ? realm : "") + 
-                ", description - " + (description != null ? description.toString() : "") + "]";
+    public String getVendor() {
+        return vendor;
+    }
+
+    public void setVendor(String vendor) {
+        this.vendor = vendor;
     }
 
     public static class Schema {
@@ -108,5 +97,14 @@ public class Meta {
         public String toString() {
             return "Author [email - " + (email != null ? email : "") + "]";
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Metaa [schema - " + (schema != null ? schema.toString() : "") +
+                ", id - " + (id != null ? id : "") +
+                ", author - " + (author != null ? author.toString() : "") +
+                ", realm - " + (realm != null ? realm : "") +
+                ", description - " + (description != null ? description.toString() : "") + "]";
     }
 }

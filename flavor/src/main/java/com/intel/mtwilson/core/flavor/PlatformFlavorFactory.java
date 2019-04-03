@@ -37,8 +37,9 @@ public class PlatformFlavorFactory {
             if (hostManifest != null && hostManifest.getHostInfo() != null) {
                 log.info("getPlatformFlavor: creating platform flavor instance for {}", hostManifest.getHostInfo().getOsName());
                 switch (hostManifest.getHostInfo().getOsName().trim().toUpperCase()) {
-                    case "RHEL":
                     case "REDHATENTERPRISESERVER":
+                    case "RHEL":
+                    case "UBUNTU":
                         return new RHELPlatformFlavor(hostManifest, tagCertificate);
                     case "WINDOWS":
                     case "MICROSOFT WINDOWS SERVER 2016 DATACENTER":
@@ -60,18 +61,14 @@ public class PlatformFlavorFactory {
         }
     }
 
-    public PlatformFlavor getPlatformFlavor(String vendor,X509AttributeCertificate tagCertificate) throws PlatformFlavorException, MalformedURLException {
-
+    public PlatformFlavor getPlatformFlavor(String vendor, X509AttributeCertificate tagCertificate) throws PlatformFlavorException, MalformedURLException {
         try {
-            
             if (tagCertificate == null){
                 log.error("getPlatformFlavor: Invalid tag certificate specified.");
                 throw new PlatformFlavorException(ErrorCode.INVALID_INPUT, "Invalid tag certificate specified");
             }
-                
             log.info("getPlatformFlavor: creating generic platform flavor for tag certificate with host hardware UUID {}", tagCertificate.getSubject());
             return new GenericPlatformFlavor(vendor, tagCertificate);
-
         } catch (PlatformFlavorException pex) {
             throw pex;
         } catch (Exception ex) {
@@ -80,5 +77,4 @@ public class PlatformFlavorFactory {
             throw new PlatformFlavorException(ErrorCode.SYSTEM_ERROR, errorMessage, ex);
         }
     }
-
 }

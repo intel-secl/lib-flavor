@@ -1,6 +1,7 @@
 /*
- * Copyright (C) 2019 Intel Corporation
- * SPDX-License-Identifier: BSD-3-Clause
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 package com.intel.mtwilson.core.flavor;
 
@@ -32,14 +33,19 @@ public class GenericPlatformFlavor extends PlatformFlavor {
     }
 
     @Override
-    public String getFlavorPart(String flavorPartName) throws Exception {
+    public String getFlavorPart(String name) throws Exception {
         try {
-            switch (FlavorPart.valueOf(flavorPartName.toUpperCase())) {
+            String flavorPartName = name.toUpperCase();
+            switch (FlavorPart.valueOf(flavorPartName)) {
                 case ASSET_TAG:
                     return getAssetTagFlavor();
                 default:
                     throw new PlatformFlavorException(ErrorCode.UNKNOWN_FLAVOR_PART, "Unknown flavor part specified by the user");
             }
+        } catch(IllegalArgumentException lex) {
+            String errorMessage = "Unknown flavor part specified by the user";
+            log.error(errorMessage, lex);
+            throw new PlatformFlavorException(ErrorCode.UNKNOWN_FLAVOR_PART, errorMessage);
         } catch (PlatformFlavorException pex) {
             throw pex;
         } catch (Exception ex) {
@@ -64,9 +70,13 @@ public class GenericPlatformFlavor extends PlatformFlavor {
     private String getAssetTagFlavor() throws PlatformFlavorException {
 
         try {
-            Flavor flavor = new Flavor(PlatformFlavorUtil.getMetaSectionDetails(null, tagCertificate, ASSET_TAG.getValue(), vendor), null, null, PlatformFlavorUtil.getExternalConfigurationDetails(null, tagCertificate));
+            Flavor flavor = new Flavor(
+                    PlatformFlavorUtil.getMetaSectionDetails(null, tagCertificate, null, ASSET_TAG, vendor),
+                    null,
+                    null,
+                    null,
+                    PlatformFlavorUtil.getExternalConfigurationDetails(null, tagCertificate), null);
             return Flavor.serialize(flavor);
-
         } catch (PlatformFlavorException pex) {
             throw pex;
         } catch (Exception ex) {

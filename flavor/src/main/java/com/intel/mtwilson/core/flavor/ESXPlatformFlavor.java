@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2019 Intel Corporation
- * SPDX-License-Identifier: BSD-3-Clause
- */
 package com.intel.mtwilson.core.flavor;
 
 import com.intel.dcsg.cpg.crypto.DigestAlgorithm;
@@ -9,10 +5,7 @@ import static com.intel.dcsg.cpg.crypto.DigestAlgorithm.SHA1;
 import static com.intel.mtwilson.core.flavor.common.FlavorPart.*;
 
 import com.intel.dcsg.cpg.crypto.Sha1Digest;
-import com.intel.mtwilson.core.flavor.common.ErrorCode;
-import com.intel.mtwilson.core.flavor.common.FlavorPart;
-import com.intel.mtwilson.core.flavor.common.PlatformFlavorException;
-import com.intel.mtwilson.core.flavor.common.PlatformFlavorUtil;
+import com.intel.mtwilson.core.flavor.common.*;
 import com.intel.mtwilson.core.flavor.model.*;
 import com.intel.mtwilson.core.common.model.HostManifest;
 import com.intel.mtwilson.core.common.model.HostInfo;
@@ -51,11 +44,12 @@ public class ESXPlatformFlavor extends PlatformFlavor {
     public ESXPlatformFlavor(X509AttributeCertificate tagCertificate) {
         this.tagCertificate = tagCertificate;
     }
-
+    
     @Override
-    public String getFlavorPart(String flavorPartName) throws Exception {
+    public String getFlavorPart(String name) throws Exception {
         try {
-            switch (FlavorPart.valueOf(flavorPartName.toUpperCase())) {
+            FlavorPart flavorPartName = valueOf(name.toUpperCase());
+            switch (flavorPartName) {
                 case PLATFORM:
                     return getPlatformFlavor();
                 case OS:
@@ -67,6 +61,10 @@ public class ESXPlatformFlavor extends PlatformFlavor {
                 default:
                     throw new PlatformFlavorException(ErrorCode.UNKNOWN_FLAVOR_PART, "Unknown flavor part specified by the user");
             }
+        } catch(IllegalArgumentException lex) {
+            String errorMessage = "Unknown flavor part specified by the user";
+            log.error(errorMessage, lex);
+            throw new PlatformFlavorException(ErrorCode.UNKNOWN_FLAVOR_PART, errorMessage);
         } catch (PlatformFlavorException pex) {
             throw pex;
         } catch (Exception ex) {
@@ -85,7 +83,8 @@ public class ESXPlatformFlavor extends PlatformFlavor {
         Iterator iterator = flavorParts.iterator();
         while (iterator.hasNext()) {
             String nextElement = (String) iterator.next();
-            List<Integer> pcrList = getPcrList(hostInfo.getTpmVersion(), nextElement);
+            nextElement = nextElement.toUpperCase();
+            List<Integer> pcrList = getPcrList(hostInfo.getTpmVersion(), FlavorPart.valueOf(nextElement));
             boolean pcrExists = PlatformFlavorUtil.pcrExists(hostManifest.getPcrManifest(), pcrList);
             if (!pcrExists) {
                 iterator.remove();
@@ -94,23 +93,23 @@ public class ESXPlatformFlavor extends PlatformFlavor {
 
         // If asset tag is configured, add it to the list of flavor parts.
 //        if (tagCertificate != null)
-//            flavorParts.add(ASSET_TAG.getValue());
+//            flavorParts.add(Constants.ASSET_TAG);
         pcrDetails = PlatformFlavorUtil.getPcrDetails(hostManifest.getPcrManifest(), Arrays.asList(22), false);
         for (Map.Entry<DigestAlgorithm, Map<PcrIndex, PcrEx>> digestAlgorithmEntry : pcrDetails.entrySet()) {
             Map<PcrIndex, PcrEx> digestAlgorigthmValue = digestAlgorithmEntry.getValue();
             for (Map.Entry<PcrIndex, PcrEx> pcrIndexEntry : digestAlgorigthmValue.entrySet()) {
-
+               
                 PcrIndex key = pcrIndexEntry.getKey();
                 PcrEx value = pcrIndexEntry.getValue();
-
+                
                 if (key.toInteger() == 22 && !value.getValue().equalsIgnoreCase(Sha1Digest.ZERO.toHexString())) {
                     log.debug("ESXPlatformFlavor: Adding support for asset tag flavor.");
                     flavorParts.add(ASSET_TAG.getValue());
-                    break;
+                    break;    
                 }
             }
         }
-
+        
         return flavorParts;
 
     }
@@ -123,10 +122,10 @@ public class ESXPlatformFlavor extends PlatformFlavor {
      * @param flavorPartName Name of the flavor part.
      * @return List of PCRs for the specified flavor part and TPM version.
      */
-    private List<Integer> getPcrList(String tpmVersion, String flavorPartName) {
+    private List<Integer> getPcrList(String tpmVersion, FlavorPart flavorPartName) {
         List<Integer> pcrs = new ArrayList<>();
         boolean isTpm20 = tpmVersion != null && tpmVersion.equals("2.0");
-        switch (FlavorPart.valueOf(flavorPartName.toUpperCase())) {
+        switch (flavorPartName) {
             case PLATFORM:
                 if(isTpm20)
                     pcrs.addAll(Arrays.asList(0, 17, 18));
@@ -146,7 +145,7 @@ public class ESXPlatformFlavor extends PlatformFlavor {
                     pcrs.addAll(Arrays.asList(19));
                 break;
             case ASSET_TAG:
-                pcrs.addAll(Arrays.asList(22));
+                pcrs.addAll(Arrays.asList(22)); 
                 break;
             case SOFTWARE:
             default:
@@ -164,10 +163,10 @@ public class ESXPlatformFlavor extends PlatformFlavor {
      * @param flavorPartName Name of the flavor part.
      * @return Boolean flag indicating whether the event log should be included or not.
      */
-    private boolean eventLogRequired(String tpmVersion, String flavorPartName) {
+    private boolean eventLogRequired(String tpmVersion, FlavorPart flavorPartName) {
         boolean eventLogRequired = false;
 
-        switch (FlavorPart.valueOf(flavorPartName.toUpperCase())) {
+        switch (flavorPartName) {
             case PLATFORM:
                 if ("2.0".equalsIgnoreCase(tpmVersion)){
                     eventLogRequired = true;
@@ -203,15 +202,15 @@ public class ESXPlatformFlavor extends PlatformFlavor {
      */
     private String getPlatformFlavor() throws PlatformFlavorException {
         try {
-            List<Integer> platformPcrs = getPcrList(hostInfo.getTpmVersion(), PLATFORM.getValue());
-            boolean includeEventLog = eventLogRequired(hostInfo.getTpmVersion(), PLATFORM.getValue());
+            List<Integer> platformPcrs = getPcrList(hostInfo.getTpmVersion(), PLATFORM);
+            boolean includeEventLog = eventLogRequired(hostInfo.getTpmVersion(), PLATFORM);
             Map<DigestAlgorithm, Map<PcrIndex, PcrEx>> pcrDetails =
                     PlatformFlavorUtil.getPcrDetails(hostManifest.getPcrManifest(), platformPcrs, includeEventLog);
             Flavor flavor = new Flavor(
-                    PlatformFlavorUtil.getMetaSectionDetails(hostInfo, tagCertificate, PLATFORM.getValue(), null),
+                    PlatformFlavorUtil.getMetaSectionDetails(hostInfo, tagCertificate, null, FlavorPart.PLATFORM, null),
+                    PlatformFlavorUtil.getBiosSectionDetails(hostInfo),
                     PlatformFlavorUtil.getHardwareSectionDetails(hostInfo),
-                    pcrDetails,
-                    null);
+                    pcrDetails, null, null);
             return Flavor.serialize(flavor);
         } catch (Exception ex) {
             String errorMessage = "Error during creation of PLATFORM flavor";
@@ -232,27 +231,26 @@ public class ESXPlatformFlavor extends PlatformFlavor {
     private String getOsFlavor() throws Exception {
         List<String> modulesToExclude = hostSpecificModules;
         try {
-            List<Integer> osPcrs = getPcrList(hostInfo.getTpmVersion(), OS.getValue());
-            boolean includeEventLog = eventLogRequired(hostInfo.getTpmVersion(), OS.getValue());
-            // Need to remove the commandLine module from the whitelist as it is evaluated
+            List<Integer> osPcrs = getPcrList(hostInfo.getTpmVersion(), OS);
+            boolean includeEventLog = eventLogRequired(hostInfo.getTpmVersion(), OS);
+            // Need to remove the commandLine module from the whitelist as it is evaluated 
             // in host specific flavor.
             Map<DigestAlgorithm, Map<PcrIndex, PcrEx>> filteredPcrDetails = PlatformFlavorUtil.excludeModulesFromEventLog(
                     PlatformFlavorUtil.getPcrDetails(hostManifest.getPcrManifest(), osPcrs, includeEventLog),
                     modulesToExclude);
             Flavor flavor = new Flavor(
-                    PlatformFlavorUtil.getMetaSectionDetails(hostInfo, tagCertificate, OS.getValue(), null),
+                    PlatformFlavorUtil.getMetaSectionDetails(hostInfo, tagCertificate, null, FlavorPart.OS, null),
+                    PlatformFlavorUtil.getBiosSectionDetails(hostInfo),
                     null,
-                    filteredPcrDetails,
-                    null);
+                    filteredPcrDetails, null, null);
             return Flavor.serialize(flavor);
-
         } catch (Exception ex) {
             String errorMessage = "Error during creation of OS flavor";
             log.error(errorMessage, ex);
             throw new PlatformFlavorException(ErrorCode.SYSTEM_ERROR, errorMessage, ex);
         }
     }
-
+    
     /**
      * Returns a json document having all the good known PCR values and
      * corresponding event logs that can be used for evaluating the unique part
@@ -264,16 +262,16 @@ public class ESXPlatformFlavor extends PlatformFlavor {
      */
     private String getHostUniqueFlavor() throws Exception {
         try {
-            List<Integer> hostUniquePcrs = getPcrList(hostInfo.getTpmVersion(), HOST_UNIQUE.getValue());
-            boolean includeEventLog = eventLogRequired(hostInfo.getTpmVersion(), HOST_UNIQUE.getValue());
+            List<Integer> hostUniquePcrs = getPcrList(hostInfo.getTpmVersion(), HOST_UNIQUE);
+            boolean includeEventLog = eventLogRequired(hostInfo.getTpmVersion(), HOST_UNIQUE);
             Map<DigestAlgorithm, Map<PcrIndex, PcrEx>> pcrDetails = PlatformFlavorUtil.getPcrDetails(hostManifest.getPcrManifest(), hostUniquePcrs, includeEventLog);
             pcrDetails = PlatformFlavorUtil.includeModulesToEventLog(pcrDetails, hostSpecificModules);
 
             Flavor flavor = new Flavor(
-                    PlatformFlavorUtil.getMetaSectionDetails(hostInfo, tagCertificate, HOST_UNIQUE.getValue(), null),
+                    PlatformFlavorUtil.getMetaSectionDetails(hostInfo, tagCertificate, null, HOST_UNIQUE, null),
+                    PlatformFlavorUtil.getBiosSectionDetails(hostInfo),
                     null,
-                    pcrDetails,
-                    null);
+                    pcrDetails, null, null);
             return Flavor.serialize(flavor);
         } catch (Exception ex) {
             String errorMessage = "Error during creation of HOST_UNIQUE flavor";
@@ -281,7 +279,7 @@ public class ESXPlatformFlavor extends PlatformFlavor {
             throw new PlatformFlavorException(ErrorCode.SYSTEM_ERROR, errorMessage, ex);
         }
     }
-
+    
     /**
      * Retrieves the asset tag part of the flavor including the certificate and
      * all the key-value pairs that are part of the certificate.
@@ -293,22 +291,22 @@ public class ESXPlatformFlavor extends PlatformFlavor {
         try {
             if (tagCertificate == null)
                 throw new PlatformFlavorException(ErrorCode.INVALID_INPUT, "Tag certificate is not specified");
-
+            
             // calculate the expected PCR 22 value based on tag certificate hash
             Sha1Digest tagCertificateHash = Sha1Digest.digestOf(tagCertificate.getEncoded());
             String expectedPcrValue = Sha1Digest.ZERO.extend(tagCertificateHash).toHexString();
-
+            
             // Add the expected PCR 22 value to respective hash maps
             Map<PcrIndex, PcrEx> pcr22Map = new HashMap();
             pcr22Map.put(PcrIndex.PCR22, new PcrEx(expectedPcrValue, null));
             Map<DigestAlgorithm, Map<PcrIndex, PcrEx>> pcrDetails = new HashMap();
             pcrDetails.put(SHA1, pcr22Map);
-
+            
             Flavor flavor = new Flavor(
-                    PlatformFlavorUtil.getMetaSectionDetails(hostInfo, tagCertificate, ASSET_TAG.getValue(), null),
+                    PlatformFlavorUtil.getMetaSectionDetails(hostInfo, tagCertificate, null, ASSET_TAG, null),
+                    PlatformFlavorUtil.getBiosSectionDetails(hostInfo),
                     null,
-                    pcrDetails,
-                    PlatformFlavorUtil.getExternalConfigurationDetails(hostManifest, tagCertificate));
+                    pcrDetails, PlatformFlavorUtil.getExternalConfigurationDetails(hostManifest, tagCertificate), null);
             return Flavor.serialize(flavor);
         } catch (PlatformFlavorException pex) {
             throw pex;

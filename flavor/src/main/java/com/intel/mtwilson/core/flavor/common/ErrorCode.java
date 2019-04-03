@@ -21,8 +21,9 @@ public enum ErrorCode {
     UNKNOWN_VENDOR_SPECIFIED(5005, "Specified vendor is not supported"),
     UN_SUPPORTED_OS(5006, "Host operating system is not supported"),
     INVALID_INPUT(5007, "Invalid input specified."),
-    FLAVOR_PART_CANNOT_BE_SUPPORTED(5008, "Requested flavor part cannot be supported. Please verify input parameters.");
-     
+    FLAVOR_PART_CANNOT_BE_SUPPORTED(5008, "Requested flavor part cannot be supported. Please verify input parameters."),
+    DEFAULT_SOFTWARE_FLAVOR_CANNOT_BE_CREATED(5009, "No or invalid measurements, default software flavor can not be created");
+
     public int getErrorCode() {
         
         return errorCode;

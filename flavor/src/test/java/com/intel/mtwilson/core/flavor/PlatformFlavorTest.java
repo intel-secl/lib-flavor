@@ -1,6 +1,7 @@
 /*
- * Copyright (C) 2019 Intel Corporation
- * SPDX-License-Identifier: BSD-3-Clause
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
 package com.intel.mtwilson.core.flavor;
 
@@ -68,7 +69,7 @@ public class PlatformFlavorTest {
     @Test
     public void testGetUbuntuTpm12FlavorPartNames() throws Exception {
         System.out.println("testGetUbuntuTpm12FlavorPartNames");
-        Collection<String> expResult = new ArrayList(Arrays.asList(PLATFORM.getValue(), OS.getValue(), HOST_UNIQUE.getValue(), ASSET_TAG.getValue()));
+        Collection<String> expResult = new ArrayList(Arrays.asList(PLATFORM.getValue(), OS.getValue(), HOST_UNIQUE.getValue(), SOFTWARE.getValue(), ASSET_TAG.getValue()));
 
         PlatformFlavorFactory factory = new PlatformFlavorFactory();
         PlatformFlavor platformFlavor = factory.getPlatformFlavor(hostManifest, null); // since we are passing null for tagcertificate, it should have only 2 flavor parts
@@ -82,7 +83,7 @@ public class PlatformFlavorTest {
         assertEquals(expResult, result);
         
         String actualFlavor = platformFlavor.getFlavorPart(PLATFORM.getValue());
-        String expectedFlavor = Resources.toString(Resources.getResource("RHEL_PLATFORM_TPM12.json"),Charset.defaultCharset());
+        String expectedFlavor = Resources.toString(Resources.getResource("RHEL_BIOS_TPM12.json"),Charset.defaultCharset());
         System.out.println("Actual PLATFORM flavor is *** " + actualFlavor + " ***");
         System.out.println("Expected PLATFORM flavor is ***" + expectedFlavor + "***");
         String actualIdValue = actualFlavor.substring(actualFlavor.indexOf("\"id\":")+("\"id\":").length(), (actualFlavor.indexOf("\"id\":")+("\"id\":").length()+38));
@@ -91,12 +92,11 @@ public class PlatformFlavorTest {
         System.out.println("After ID replacement:");
         System.out.println("Actual PLATFORM flavor is *** " + actualFlavor + " ***");
         System.out.println("Expected PLATFORM flavor is ***" + expectedFlavor + "***");
-        
     }
-
+    
     @Test
     public void testCreateAssetTagFlavorOnly() throws Exception {
-        Collection<String> expResult = new ArrayList(Arrays.asList("ASSET_TAG"));
+        Collection<String> expResult = new ArrayList(Arrays.asList(ASSET_TAG.getValue()));
         
         PlatformFlavorFactory factory = new PlatformFlavorFactory();
         PlatformFlavor platformFlavor = factory.getPlatformFlavor(getVendorName(hostManifest.getHostInfo()), tagCer);
@@ -104,7 +104,7 @@ public class PlatformFlavorTest {
         Collection<String> actualResult = platformFlavor.getFlavorPartNames();
         assertEquals(expResult, actualResult);
                 
-        String actualFlavor = platformFlavor.getFlavorPart("ASSET_TAG");
+        String actualFlavor = platformFlavor.getFlavorPart(ASSET_TAG.getValue());
         String expectedFlavor = Resources.toString(Resources.getResource("RHEL_Asset_Tag_Flavor.json"),Charset.defaultCharset());
         System.out.println("Actual ASSET_TAG flavor is *** " + actualFlavor + " ***");
         System.out.println("Expected ASSET_TAG flavor is ***" + expectedFlavor + "***");
