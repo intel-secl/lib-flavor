@@ -61,7 +61,6 @@ public class WindowsPlatformFlavor extends PlatformFlavor {
                 case ASSET_TAG:
                     return getAssetTagFlavor();
                 case HOST_UNIQUE:
-//                    return getHostUniqueFlavor();
                     throw new PlatformFlavorException(ErrorCode.FLAVOR_PART_CANNOT_BE_SUPPORTED, "Windows does not support HOST_UNIQUE flavor part");
                 default:
                     throw new PlatformFlavorException(ErrorCode.UNKNOWN_FLAVOR_PART, "Unknown flavor part specified by the user");

@@ -92,9 +92,6 @@ public class ESXPlatformFlavor extends PlatformFlavor {
             }
         }
 
-        // If asset tag is configured, add it to the list of flavor parts.
-//        if (tagCertificate != null)
-//            flavorParts.add(ASSET_TAG.getValue());
         pcrDetails = PlatformFlavorUtil.getPcrDetails(hostManifest.getPcrManifest(), Arrays.asList(22), false);
         for (Map.Entry<DigestAlgorithm, Map<PcrIndex, PcrEx>> digestAlgorithmEntry : pcrDetails.entrySet()) {
             Map<PcrIndex, PcrEx> digestAlgorigthmValue = digestAlgorithmEntry.getValue();

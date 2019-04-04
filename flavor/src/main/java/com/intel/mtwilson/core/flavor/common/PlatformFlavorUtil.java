@@ -182,17 +182,7 @@ public class PlatformFlavorUtil {
 
         return pcrsWithDigestAlgorithm;
     }
-    
-//    public static HostUniqueAssetTag getHostUniqueAssetTagDetails(HostManifest hostManifest) {
-//    
-//        HostUniqueAssetTag assetTag = new HostUniqueAssetTag();
-//        assetTag.setProvisionedTagValue(hostManifest.getAssetTagDigest());
-//        assetTag.setDigestAlgorithm(DigestAlgorithm.SHA256.algorithm());
-//        
-//        return assetTag;
-//    }
-    
-    
+
     public static External getExternalConfigurationDetails(HostManifest hostManifest, X509AttributeCertificate tagCertificate) throws PlatformFlavorException {
         
         External externalConfiguration = new External();
@@ -201,37 +191,6 @@ public class PlatformFlavorUtil {
         if (tagCertificate == null) {
             throw new PlatformFlavorException(ErrorCode.INVALID_INPUT, "Specified tagcertificate is not valid.");
         }
-        
-//        Certificate certificate = new Certificate();
-//        Map<String, Map<String, Set<String>>> certificateAttributes = new HashMap<>();
-//
-//        List<Attribute> tagAttributes = tagCertificate.getAttribute();
-//        for (Attribute tagAttribute : tagAttributes) {
-//            String attrObjectId  = tagAttribute.getAttrType().getId();
-//            String[] assetTagAttributestrObjectValue = tagAttribute.getAttrValues().toArray()[0].toString().split("=");
-//            
-//            if (certificateAttributes.containsKey(attrObjectId)) {
-//                Map<String, Set<String>> getCert = certificateAttributes.get(attrObjectId);
-//                if (getCert.containsKey(assetTagAttributestrObjectValue[0])) {
-//                    Set<String> get = getCert.get(assetTagAttributestrObjectValue[0]);
-//                    get.add(assetTagAttributestrObjectValue[1]);
-//                    getCert.replace(attrObjectId, get);
-//                } else {
-//                    Set<String> h = new HashSet<>(Arrays.asList(assetTagAttributestrObjectValue[1]));
-//                    getCert.put(assetTagAttributestrObjectValue[0], h);
-//                }
-//            } else {
-//                Set<String> h = new HashSet<>(Arrays.asList(assetTagAttributestrObjectValue[1]));
-//                Map<String, Set<String>> newAttributeValues = new HashMap<>();
-//                newAttributeValues.put(assetTagAttributestrObjectValue[0], h);
-//                certificateAttributes.put(attrObjectId, newAttributeValues);                
-//            }
-//            
-//        }
-//        certificate.setAttribute(certificateAttributes);
-//        certificate.setIssuer(new Certificate.Issuer(tagCertificate.getIssuer()));
-        
-        //assetTag.setCertificate(certificate);
         assetTag.setTagCertificate(tagCertificate);
         externalConfiguration.setAssetTag(assetTag);
         return externalConfiguration;
