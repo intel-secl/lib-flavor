@@ -11,13 +11,7 @@ import com.intel.mtwilson.core.common.model.HostManifest;
 import com.intel.mtwilson.core.common.model.HostInfo;
 import com.intel.mtwilson.core.common.model.PcrIndex;
 import com.intel.mtwilson.core.common.tag.model.X509AttributeCertificate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
@@ -46,7 +40,7 @@ public class ESXPlatformFlavor extends PlatformFlavor {
     }
     
     @Override
-    public String getFlavorPart(String name) throws Exception {
+    public List<String> getFlavorPart(String name) throws Exception {
         try {
             FlavorPart flavorPartName = valueOf(name.toUpperCase());
             switch (flavorPartName) {
@@ -200,8 +194,9 @@ public class ESXPlatformFlavor extends PlatformFlavor {
      * @return PLATFORM flavor as a JSON document.
      * @throws PlatformFlavorException
      */
-    private String getPlatformFlavor() throws PlatformFlavorException {
+    private List<String> getPlatformFlavor() throws PlatformFlavorException {
         try {
+            List<String> platformFlavors = new ArrayList();
             List<Integer> platformPcrs = getPcrList(hostInfo.getTpmVersion(), PLATFORM);
             boolean includeEventLog = eventLogRequired(hostInfo.getTpmVersion(), PLATFORM);
             Map<DigestAlgorithm, Map<PcrIndex, PcrEx>> pcrDetails =
@@ -211,7 +206,8 @@ public class ESXPlatformFlavor extends PlatformFlavor {
                     PlatformFlavorUtil.getBiosSectionDetails(hostInfo),
                     PlatformFlavorUtil.getHardwareSectionDetails(hostInfo),
                     pcrDetails, null, null);
-            return Flavor.serialize(flavor);
+            platformFlavors.add(Flavor.serialize(flavor));
+            return platformFlavors;
         } catch (Exception ex) {
             String errorMessage = "Error during creation of PLATFORM flavor";
             log.error(errorMessage, ex);
@@ -228,9 +224,10 @@ public class ESXPlatformFlavor extends PlatformFlavor {
      * @return OS flavor as a JSON document.
      * @throws Exception
      */
-    private String getOsFlavor() throws Exception {
+    private List<String> getOsFlavor() throws Exception {
         List<String> modulesToExclude = hostSpecificModules;
         try {
+            List<String> osFlavors = new ArrayList();
             List<Integer> osPcrs = getPcrList(hostInfo.getTpmVersion(), OS);
             boolean includeEventLog = eventLogRequired(hostInfo.getTpmVersion(), OS);
             // Need to remove the commandLine module from the whitelist as it is evaluated 
@@ -243,7 +240,8 @@ public class ESXPlatformFlavor extends PlatformFlavor {
                     PlatformFlavorUtil.getBiosSectionDetails(hostInfo),
                     null,
                     filteredPcrDetails, null, null);
-            return Flavor.serialize(flavor);
+            osFlavors.add(Flavor.serialize(flavor));
+            return osFlavors;
         } catch (Exception ex) {
             String errorMessage = "Error during creation of OS flavor";
             log.error(errorMessage, ex);
@@ -260,8 +258,9 @@ public class ESXPlatformFlavor extends PlatformFlavor {
      * @return HostUnique flavor as a JSON document.
      * @throws Exception
      */
-    private String getHostUniqueFlavor() throws Exception {
+    private List<String> getHostUniqueFlavor() throws Exception {
         try {
+            List<String> hostUniqueFlavors = new ArrayList();
             List<Integer> hostUniquePcrs = getPcrList(hostInfo.getTpmVersion(), HOST_UNIQUE);
             boolean includeEventLog = eventLogRequired(hostInfo.getTpmVersion(), HOST_UNIQUE);
             Map<DigestAlgorithm, Map<PcrIndex, PcrEx>> pcrDetails = PlatformFlavorUtil.getPcrDetails(hostManifest.getPcrManifest(), hostUniquePcrs, includeEventLog);
@@ -272,7 +271,8 @@ public class ESXPlatformFlavor extends PlatformFlavor {
                     PlatformFlavorUtil.getBiosSectionDetails(hostInfo),
                     null,
                     pcrDetails, null, null);
-            return Flavor.serialize(flavor);
+            hostUniqueFlavors.add(Flavor.serialize(flavor));
+            return hostUniqueFlavors;
         } catch (Exception ex) {
             String errorMessage = "Error during creation of HOST_UNIQUE flavor";
             log.error(errorMessage, ex);
@@ -287,8 +287,9 @@ public class ESXPlatformFlavor extends PlatformFlavor {
      * @return
      * @throws Exception
      */
-    private String getAssetTagFlavor() throws PlatformFlavorException {
+    private List<String> getAssetTagFlavor() throws PlatformFlavorException {
         try {
+            List<String> assetTagFlavors = new ArrayList();
             if (tagCertificate == null)
                 throw new PlatformFlavorException(ErrorCode.INVALID_INPUT, "Tag certificate is not specified");
             
@@ -307,7 +308,8 @@ public class ESXPlatformFlavor extends PlatformFlavor {
                     PlatformFlavorUtil.getBiosSectionDetails(hostInfo),
                     null,
                     pcrDetails, PlatformFlavorUtil.getExternalConfigurationDetails(hostManifest, tagCertificate), null);
-            return Flavor.serialize(flavor);
+            assetTagFlavors.add(Flavor.serialize(flavor));
+            return assetTagFlavors;
         } catch (PlatformFlavorException pex) {
             throw pex;
         } catch (Exception ex) {

@@ -5,6 +5,7 @@
 package com.intel.mtwilson.core.flavor;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * 
@@ -21,7 +22,7 @@ public abstract class PlatformFlavor {
      * @since IAT 1.0
      * <pre>testing</pre>
      */
-    public abstract String getFlavorPart(String flavorPartName) throws Exception;
+    public abstract List<String> getFlavorPart(String flavorPartName) throws Exception;
     
     /**
      * Retrieves the list of flavor parts that can be obtained using the getFlavorPart method.

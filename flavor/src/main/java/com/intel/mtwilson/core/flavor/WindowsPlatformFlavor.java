@@ -45,7 +45,7 @@ public class WindowsPlatformFlavor extends PlatformFlavor {
     }
 
     @Override
-    public String getFlavorPart(String name) throws Exception {
+    public List<String> getFlavorPart(String name) throws Exception {
         try {
             String flavorPartName = name.toUpperCase();
             switch (FlavorPart.valueOf(flavorPartName)) {
@@ -162,12 +162,12 @@ public class WindowsPlatformFlavor extends PlatformFlavor {
      * @return PLATFORM flavor as a JSON document.
      * @throws Exception
      */
-    private String getPlatformFlavor() throws Exception {
+    private List<String> getPlatformFlavor() throws Exception {
         List<Integer> platformPcrs;
         Map<DigestAlgorithm, Map<PcrIndex, PcrEx>> pcrDetails;
         boolean includeEventLog;
-
         try {
+            List<String> platformFlavors = new ArrayList();
             platformPcrs = getPcrList(hostInfo.getTpmVersion(), PLATFORM);
             includeEventLog = eventLogRequired(hostInfo.getTpmVersion(), PLATFORM);
             pcrDetails = PlatformFlavorUtil.getPcrDetails(hostManifest.getPcrManifest(), platformPcrs, includeEventLog);
@@ -175,7 +175,8 @@ public class WindowsPlatformFlavor extends PlatformFlavor {
             Flavor flavor = new Flavor(PlatformFlavorUtil.getMetaSectionDetails(hostInfo, tagCertificate, null, PLATFORM, null),
                     PlatformFlavorUtil.getBiosSectionDetails(hostInfo),
                     PlatformFlavorUtil.getHardwareSectionDetails(hostInfo), pcrDetails, null, null);
-            return Flavor.serialize(flavor);
+            platformFlavors.add(Flavor.serialize(flavor));
+            return platformFlavors;
         } catch (Exception ex) {
             String errorMessage = "Error during creation of PLATFORM flavor.";
             log.error(errorMessage, ex);
@@ -192,19 +193,21 @@ public class WindowsPlatformFlavor extends PlatformFlavor {
      * @return OS flavor as a JSON document.
      * @throws Exception
      */
-    private String getOsFlavor() throws Exception {
+    private List<String> getOsFlavor() throws Exception {
         List<Integer> osPcrs;
         Map<DigestAlgorithm, Map<PcrIndex, PcrEx>> pcrDetails;
         boolean includeEventLog;
 
         try {
+            List<String> osFlavors = new ArrayList();
             osPcrs = getPcrList(hostInfo.getTpmVersion(), OS);
             includeEventLog = eventLogRequired(hostInfo.getTpmVersion(), OS);
             pcrDetails = PlatformFlavorUtil.getPcrDetails(hostManifest.getPcrManifest(), osPcrs, includeEventLog);
             Flavor flavor = new Flavor(PlatformFlavorUtil.getMetaSectionDetails(hostInfo, tagCertificate, null, OS, null),
                     PlatformFlavorUtil.getBiosSectionDetails(hostInfo),
                     null, pcrDetails, null, null);
-            return Flavor.serialize(flavor);
+            osFlavors.add(Flavor.serialize(flavor));
+            return osFlavors;
         } catch (Exception ex) {
             String errorMessage = "Error during creation of OS flavor.";
             log.error(errorMessage, ex);
@@ -218,16 +221,18 @@ public class WindowsPlatformFlavor extends PlatformFlavor {
      * @return
      * @throws Exception 
      */
-    private String getAssetTagFlavor() throws PlatformFlavorException {
+    private List<String> getAssetTagFlavor() throws PlatformFlavorException {
 
         try {
+             List<String> assetTagFlavors = new ArrayList();
             if (tagCertificate == null)
                 throw new PlatformFlavorException(ErrorCode.FLAVOR_PART_CANNOT_BE_SUPPORTED, ErrorCode.FLAVOR_PART_CANNOT_BE_SUPPORTED.getMessage());
             
             Flavor flavor = new Flavor(PlatformFlavorUtil.getMetaSectionDetails(hostInfo, tagCertificate, null, ASSET_TAG, null),
                     PlatformFlavorUtil.getBiosSectionDetails(hostInfo), null,
                     null, PlatformFlavorUtil.getExternalConfigurationDetails(hostManifest, tagCertificate), null);
-            return Flavor.serialize(flavor);
+            assetTagFlavors.add(Flavor.serialize(flavor));
+            return assetTagFlavors;
         } catch (PlatformFlavorException pex) {
             throw pex;
         } catch (Exception ex) {

@@ -11,9 +11,7 @@ import com.intel.mtwilson.core.flavor.common.PlatformFlavorException;
 import com.intel.mtwilson.core.flavor.common.PlatformFlavorUtil;
 import com.intel.mtwilson.core.flavor.model.*;
 import com.intel.mtwilson.core.common.tag.model.X509AttributeCertificate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.*;
 
 import static com.intel.mtwilson.core.flavor.common.FlavorPart.ASSET_TAG;
 
@@ -33,7 +31,7 @@ public class GenericPlatformFlavor extends PlatformFlavor {
     }
 
     @Override
-    public String getFlavorPart(String name) throws Exception {
+    public List<String> getFlavorPart(String name) throws Exception {
         try {
             String flavorPartName = name.toUpperCase();
             switch (FlavorPart.valueOf(flavorPartName)) {
@@ -67,16 +65,18 @@ public class GenericPlatformFlavor extends PlatformFlavor {
      * @return
      * @throws Exception
      */
-    private String getAssetTagFlavor() throws PlatformFlavorException {
+    private List<String> getAssetTagFlavor() throws PlatformFlavorException {
 
         try {
+            List<String> assetTagFlavors = new ArrayList();
             Flavor flavor = new Flavor(
                     PlatformFlavorUtil.getMetaSectionDetails(null, tagCertificate, null, ASSET_TAG, vendor),
                     null,
                     null,
                     null,
                     PlatformFlavorUtil.getExternalConfigurationDetails(null, tagCertificate), null);
-            return Flavor.serialize(flavor);
+            assetTagFlavors.add(Flavor.serialize(flavor));
+            return assetTagFlavors;
         } catch (PlatformFlavorException pex) {
             throw pex;
         } catch (Exception ex) {

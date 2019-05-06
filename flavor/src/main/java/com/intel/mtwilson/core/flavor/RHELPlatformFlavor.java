@@ -14,7 +14,8 @@ import java.io.IOException;
 import java.util.*;
 
 import static com.intel.mtwilson.core.flavor.common.FlavorPart.*;
-import static com.intel.mtwilson.core.flavor.SoftwareFlavor.DEFAULT_FLAVOR_PREFIX;
+import static com.intel.mtwilson.core.flavor.SoftwareFlavor.DEFAULT_APPLICATION_FLAVOR_PREFIX;
+import static com.intel.mtwilson.core.flavor.SoftwareFlavor.DEFAULT_WORKLOAD_FLAVOR_PREFIX;
 
 /**
  *
@@ -48,7 +49,7 @@ public class RHELPlatformFlavor extends PlatformFlavor {
     }
 
     @Override
-    public String getFlavorPart(String name) throws Exception {
+    public List<String> getFlavorPart(String name) throws Exception {
         try {
             String flavorPartName = name.toUpperCase();
             switch (FlavorPart.valueOf(flavorPartName)) {
@@ -223,8 +224,9 @@ public class RHELPlatformFlavor extends PlatformFlavor {
      * @return PLATFORM flavor as a JSON document.
      * @throws Exception
      */
-    private String getPlatformFlavor() throws Exception {
+    private List<String> getPlatformFlavor() throws Exception {
         try {
+            List<String> platformFlavors = new ArrayList();
             List<Integer> platformPcrs = getPcrList(hostInfo, PLATFORM);
             boolean includeEventLog = eventLogRequired(hostInfo.getTpmVersion(), PLATFORM);
             Map<DigestAlgorithm, Map<PcrIndex, PcrEx>> filteredPcrDetails = PlatformFlavorUtil.includeModulesToEventLog(
@@ -235,7 +237,8 @@ public class RHELPlatformFlavor extends PlatformFlavor {
                     PlatformFlavorUtil.getBiosSectionDetails(hostInfo),
                     PlatformFlavorUtil.getHardwareSectionDetails(hostInfo),
                     filteredPcrDetails, null, null);
-            return Flavor.serialize(flavor);
+            platformFlavors.add(Flavor.serialize(flavor));
+            return platformFlavors;
         } catch (Exception ex) {
             String errorMessage = "Error during creation of PLATFORM flavor";
             log.error(errorMessage, ex);
@@ -248,11 +251,12 @@ public class RHELPlatformFlavor extends PlatformFlavor {
      * corresponding event logs that can be used for evaluating the OS Kernel of
      * a host.
      *
-     * @return OS flavor as a JSON document.
+     * @return Collection of OS flavors as a JSON document.
      * @throws Exception
      */
-    private String getOsFlavor() throws Exception {
+    private List<String> getOsFlavor() throws Exception {
         try {
+            List<String> osFlavors = new ArrayList();
             List<Integer> osPcrs = getPcrList(hostInfo, OS);
             boolean includeEventLog = eventLogRequired(hostInfo.getTpmVersion(), OS);
             Map<DigestAlgorithm, Map<PcrIndex, PcrEx>> filteredPcrDetails = PlatformFlavorUtil.includeModulesToEventLog(
@@ -263,7 +267,8 @@ public class RHELPlatformFlavor extends PlatformFlavor {
                     PlatformFlavorUtil.getBiosSectionDetails(hostInfo),
                     null,
                     filteredPcrDetails, null, null);
-            return Flavor.serialize(flavor);
+            osFlavors.add(Flavor.serialize(flavor));
+            return osFlavors;
         } catch (Exception ex) {
             String errorMessage = "Error during creation of OS flavor";
             log.error(errorMessage, ex);
@@ -280,8 +285,9 @@ public class RHELPlatformFlavor extends PlatformFlavor {
      * @return HostUnique flavor as a JSON document.
      * @throws Exception
      */
-    private String getHostUniqueFlavor() throws Exception {
+    private List<String> getHostUniqueFlavor() throws Exception {
         try {
+            List<String> hostUniqueFlavors = new ArrayList();
             List<Integer> hostUniquePcrs = getPcrList(hostInfo, HOST_UNIQUE);
             boolean includeEventLog = eventLogRequired(hostInfo.getTpmVersion(), HOST_UNIQUE);
             Map<DigestAlgorithm, Map<PcrIndex, PcrEx>> filteredPcrDetails = PlatformFlavorUtil.includeModulesToEventLog(
@@ -292,7 +298,8 @@ public class RHELPlatformFlavor extends PlatformFlavor {
                     PlatformFlavorUtil.getBiosSectionDetails(hostInfo),
                     null,
                     filteredPcrDetails, null, null);
-            return Flavor.serialize(flavor);
+            hostUniqueFlavors.add(Flavor.serialize(flavor));
+            return hostUniqueFlavors;
         } catch (Exception ex) {
             String errorMessage = "Error during creation of HOST_UNIQUE flavor";
             log.error(errorMessage, ex);
@@ -306,8 +313,9 @@ public class RHELPlatformFlavor extends PlatformFlavor {
      * @return
      * @throws Exception 
      */
-    private String getAssetTagFlavor() throws PlatformFlavorException {
+    private List<String> getAssetTagFlavor() throws PlatformFlavorException {
         try {
+            List<String> assetTagFlavors = new ArrayList();
             if (tagCertificate == null)
                 throw new PlatformFlavorException(ErrorCode.FLAVOR_PART_CANNOT_BE_SUPPORTED, ErrorCode.FLAVOR_PART_CANNOT_BE_SUPPORTED.getMessage());
             Flavor flavor = new Flavor(
@@ -315,7 +323,8 @@ public class RHELPlatformFlavor extends PlatformFlavor {
                     PlatformFlavorUtil.getBiosSectionDetails(hostInfo),
                     null,
                     null, PlatformFlavorUtil.getExternalConfigurationDetails(hostManifest, tagCertificate), null);
-            return Flavor.serialize(flavor);
+            assetTagFlavors.add(Flavor.serialize(flavor));
+            return assetTagFlavors;
         } catch (PlatformFlavorException pex) {
             throw pex;
         } catch (Exception ex) {
@@ -333,30 +342,36 @@ public class RHELPlatformFlavor extends PlatformFlavor {
      * @return Software flavor as a JSON string.
      * @since IAT 1.0
      */
-    private String getDefaultSoftwareFlavor() throws PlatformFlavorException {
+    private List<String> getDefaultSoftwareFlavor() throws PlatformFlavorException {
         try {
+            List<String> softwareFlavors = new ArrayList();
             if (hostManifest.getPcrManifest() != null && hostManifest.getPcrManifest().getMeasurementXmls() != null &&
                     !hostManifest.getPcrManifest().getMeasurementXmls().isEmpty()) {
-                String defaultMeasurementXml = getDefaultMeasurement();
-                if(defaultMeasurementXml != null) {
-                    SoftwareFlavor softwareFlavor = new SoftwareFlavor(defaultMeasurementXml);
-                    return softwareFlavor.getSoftwareFlavor();
+                List<String> measurementXmls = getDefaultMeasurement();
+                if(measurementXmls.size() > 0) {
+                    for(String measurementXml : measurementXmls) {
+                        log.debug("Harshitha :MeasurementXML {}", measurementXml);
+                        SoftwareFlavor softwareFlavor = new SoftwareFlavor(measurementXml);
+                        softwareFlavors.add(softwareFlavor.getSoftwareFlavor());
+                    }
                 }
             }
+            return softwareFlavors;
         } catch (JAXBException | IOException | XMLStreamException e) {
-            throw new PlatformFlavorException(ErrorCode.DEFAULT_SOFTWARE_FLAVOR_CANNOT_BE_CREATED, "Unable to parse measurements");
+            throw new PlatformFlavorException(ErrorCode.SOFTWARE_FLAVOR_CANNOT_BE_CREATED, "Unable to parse measurements");
         }
-        throw new PlatformFlavorException(ErrorCode.DEFAULT_SOFTWARE_FLAVOR_CANNOT_BE_CREATED, "Couldn't find default software flavor");
     }
 
-    private String getDefaultMeasurement() throws JAXBException, IOException, XMLStreamException {
-        String defaultMeasurementXml = null;
+    private List<String> getDefaultMeasurement() throws JAXBException, IOException, XMLStreamException {
+        List<String> measurementXmlCollection = new ArrayList();
         for (String measurementXml : hostManifest.getPcrManifest().getMeasurementXmls()) {
             Measurement measurement = MeasurementUtils.parseMeasurementXML(measurementXml);
-            if(measurement.getLabel().startsWith(DEFAULT_FLAVOR_PREFIX)) {
-                defaultMeasurementXml = measurementXml;
+            if(measurement.getLabel().startsWith(DEFAULT_APPLICATION_FLAVOR_PREFIX) || 
+                    measurement.getLabel().startsWith(DEFAULT_WORKLOAD_FLAVOR_PREFIX)) {
+                log.debug("software flavor label : {}", measurement.getLabel());
+                measurementXmlCollection.add(measurementXml);
             }
         }
-        return defaultMeasurementXml;
+        return measurementXmlCollection;
     }
 }
