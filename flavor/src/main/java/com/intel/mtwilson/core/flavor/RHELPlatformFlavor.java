@@ -14,9 +14,7 @@ import java.io.IOException;
 import java.util.*;
 
 import static com.intel.mtwilson.core.flavor.common.FlavorPart.*;
-import static com.intel.mtwilson.core.flavor.SoftwareFlavor.DEFAULT_APPLICATION_FLAVOR_PREFIX;
-import static com.intel.mtwilson.core.flavor.SoftwareFlavor.DEFAULT_WORKLOAD_FLAVOR_PREFIX;
-
+import com.intel.mtwilson.core.common.model.SoftwareFlavorPrefix;
 /**
  *
  * @author ssbangal
@@ -350,7 +348,6 @@ public class RHELPlatformFlavor extends PlatformFlavor {
                 List<String> measurementXmls = getDefaultMeasurement();
                 if(measurementXmls.size() > 0) {
                     for(String measurementXml : measurementXmls) {
-                        log.debug("Harshitha :MeasurementXML {}", measurementXml);
                         SoftwareFlavor softwareFlavor = new SoftwareFlavor(measurementXml);
                         softwareFlavors.add(softwareFlavor.getSoftwareFlavor());
                     }
@@ -366,9 +363,8 @@ public class RHELPlatformFlavor extends PlatformFlavor {
         List<String> measurementXmlCollection = new ArrayList();
         for (String measurementXml : hostManifest.getPcrManifest().getMeasurementXmls()) {
             Measurement measurement = MeasurementUtils.parseMeasurementXML(measurementXml);
-            if(measurement.getLabel().startsWith(DEFAULT_APPLICATION_FLAVOR_PREFIX) || 
-                    measurement.getLabel().startsWith(DEFAULT_WORKLOAD_FLAVOR_PREFIX)) {
-                log.debug("software flavor label : {}", measurement.getLabel());
+            if(measurement.getLabel().contains(SoftwareFlavorPrefix.DEFAULT_APPLICATION_FLAVOR_PREFIX.getValue())|| 
+                    measurement.getLabel().contains(SoftwareFlavorPrefix.DEFAULT_WORKLOAD_FLAVOR_PREFIX.getValue())) {
                 measurementXmlCollection.add(measurementXml);
             }
         }

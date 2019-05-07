@@ -19,9 +19,9 @@ import static com.intel.mtwilson.core.flavor.common.FlavorPart.SOFTWARE;
  * @author ddhawal
  */
 public class SoftwareFlavor extends PlatformFlavor {
+    
+    
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SoftwareFlavor.class);
-    public static final String DEFAULT_APPLICATION_FLAVOR_PREFIX = "ISecL_Default_Application_Flavor_v";
-    public static final String DEFAULT_WORKLOAD_FLAVOR_PREFIX = "ISecL_Default_Workload_Flavor_v";
     private String measurement;
 
     public SoftwareFlavor(String measurement) {
@@ -39,14 +39,6 @@ public class SoftwareFlavor extends PlatformFlavor {
      */
     public String getSoftwareFlavor() throws IOException, JAXBException, XMLStreamException {
         Measurement measurements = MeasurementUtils.parseMeasurementXML(measurement);
-        log.debug("********************************************************************");
-        log.debug("the software mesurement {}", measurement);
-        log.debug("the software uuid from measurement {}", measurements.getUuid());
-        log.debug("the software digest algorithm from measurement {}", measurements.getDigestAlg());
-        log.debug("the software label from measurement {}", measurements.getLabel());
-        log.debug("the software measurement size from measurement list {}", measurements.getMeasurements().size());
-        log.debug("the software hash from measurement {}", measurements.getCumulativeHash().toString());
-        log.debug("********************************************************************");
         Software software = SoftwareFlavorUtil.getSoftware(measurements);
         Meta flavorMeta = PlatformFlavorUtil.getMetaSectionDetails(null,null, measurement, SOFTWARE, null);
         Flavor flavor = new Flavor(flavorMeta, null, null, null, null, software);
