@@ -73,8 +73,10 @@ public class FlavorIntegrationTest {
         for (String flavorPart : flavorParts) {
             try {
                 Logger.getLogger(FlavorIntegrationTest.class.getName()).log(Level.INFO, String.format("About to retrieve flavor details for {%s}", flavorPart));
-                List<String> detailedFlavorPart = platformFlavor.getFlavorPart(flavorPart);
-                Logger.getLogger(FlavorIntegrationTest.class.getName()).log(Level.INFO, String.format("Retrieved flavor {%s} with content {%s}", flavorPart, detailedFlavorPart.get(0)));
+                List<String> detailedFlavorParts = platformFlavor.getFlavorPart(flavorPart);
+                for (String detailedFlavorPart : detailedFlavorParts) {
+                    Logger.getLogger(FlavorIntegrationTest.class.getName()).log(Level.INFO, String.format("Retrieved flavor {%s} with content {%s}", flavorPart, detailedFlavorPart));
+                }
             } catch (Exception ex) {
                 Logger.getLogger(FlavorIntegrationTest.class.getName()).log(Level.SEVERE, String.format("Error retrieving flavor part {%s}", flavorPart), ex);
             }
