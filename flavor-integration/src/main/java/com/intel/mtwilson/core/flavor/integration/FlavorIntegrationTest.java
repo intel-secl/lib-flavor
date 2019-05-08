@@ -22,6 +22,7 @@ import com.intel.mtwilson.core.common.model.HostManifest;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -72,8 +73,8 @@ public class FlavorIntegrationTest {
         for (String flavorPart : flavorParts) {
             try {
                 Logger.getLogger(FlavorIntegrationTest.class.getName()).log(Level.INFO, String.format("About to retrieve flavor details for {%s}", flavorPart));
-                String detailedFlavorPart = platformFlavor.getFlavorPart(flavorPart);
-                Logger.getLogger(FlavorIntegrationTest.class.getName()).log(Level.INFO, String.format("Retrieved flavor {%s} with content {%s}", flavorPart, detailedFlavorPart));
+                List<String> detailedFlavorPart = platformFlavor.getFlavorPart(flavorPart);
+                Logger.getLogger(FlavorIntegrationTest.class.getName()).log(Level.INFO, String.format("Retrieved flavor {%s} with content {%s}", flavorPart, detailedFlavorPart.get(0)));
             } catch (Exception ex) {
                 Logger.getLogger(FlavorIntegrationTest.class.getName()).log(Level.SEVERE, String.format("Error retrieving flavor part {%s}", flavorPart), ex);
             }
