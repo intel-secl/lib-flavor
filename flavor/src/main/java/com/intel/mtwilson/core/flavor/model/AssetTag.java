@@ -16,7 +16,6 @@ public class AssetTag {
 
     @JsonDeserialize(using=X509AttributeCertificateDeserializer.class)
     private X509AttributeCertificate tagCertificate;
-    //private Certificate certificate;
 
     public X509AttributeCertificate getTagCertificate() {
         return tagCertificate;
@@ -25,17 +24,4 @@ public class AssetTag {
     public void setTagCertificate(X509AttributeCertificate tagCertificate) {
         this.tagCertificate = tagCertificate;
     }
-   
-//    public Certificate getCertificate() {
-//        return certificate;
-//    }
-//
-//    public void setCertificate(Certificate certificate) {
-//        this.certificate = certificate;
-//    }
-//
-//    @Override
-//    public String toString() {
-//        return "Pojo [certificate = " + certificate + "]";
-//    }
 }

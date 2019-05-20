@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2019 Intel Corporation
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
 package com.intel.mtwilson.core.flavor;
 
 import com.intel.dcsg.cpg.crypto.DigestAlgorithm;
@@ -85,9 +89,6 @@ public class ESXPlatformFlavor extends PlatformFlavor {
             }
         }
 
-        // If asset tag is configured, add it to the list of flavor parts.
-//        if (tagCertificate != null)
-//            flavorParts.add(Constants.ASSET_TAG);
         pcrDetails = PlatformFlavorUtil.getPcrDetails(hostManifest.getPcrManifest(), Arrays.asList(22), false);
         for (Map.Entry<DigestAlgorithm, Map<PcrIndex, PcrEx>> digestAlgorithmEntry : pcrDetails.entrySet()) {
             Map<PcrIndex, PcrEx> digestAlgorigthmValue = digestAlgorithmEntry.getValue();
