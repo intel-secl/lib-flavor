@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2019 Intel Corporation
- * SPDX-License-Identifier: BSD-3-Clause
- */
 package com.intel.mtwilson.core.flavor.common;
 
 import com.intel.dcsg.cpg.crypto.DigestAlgorithm;
@@ -192,7 +188,9 @@ public class PlatformFlavorUtil {
             tpm = new Feature.TPM();
             tpm.setEnabled(hardwareFeatureDetails.getEnabled());
             tpm.setVersion(hardwareFeatureDetails.getMeta().get("tpm_version"));
-            tpm.setPcrBanks(Arrays.asList(hardwareFeatureDetails.getMeta().get("pcr_banks").split("_")));
+            if (hardwareFeatureDetails.getMeta().get("pcr_banks") != null) {
+                tpm.setPcrBanks(Arrays.asList(hardwareFeatureDetails.getMeta().get("pcr_banks").split("_")));
+            }
         }
         return tpm;
     }
