@@ -70,7 +70,7 @@ public class PlatformFlavorTest {
     @Test
     public void testGetUbuntuTpm12FlavorPartNames() throws Exception {
         System.out.println("testGetUbuntuTpm12FlavorPartNames");
-        Collection<String> expResult = new ArrayList(Arrays.asList(PLATFORM.getValue(), SOFTWARE.getValue(), ASSET_TAG.getValue()));
+        Collection<String> expResult = new ArrayList(Arrays.asList(PLATFORM.getValue(), OS.getValue(), HOST_UNIQUE.getValue(), SOFTWARE.getValue(), ASSET_TAG.getValue()));
 
         PlatformFlavorFactory factory = new PlatformFlavorFactory();
         PlatformFlavor platformFlavor = factory.getPlatformFlavor(hostManifest, null); // since we are passing null for tagcertificate, it should have only 2 flavor parts
