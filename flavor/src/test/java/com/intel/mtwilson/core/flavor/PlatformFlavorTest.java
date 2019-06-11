@@ -52,9 +52,9 @@ public class PlatformFlavorTest {
         
         ObjectMapper mapper = JacksonObjectMapperProvider.createDefaultMapper();
         mapper.setPropertyNamingStrategy(new PropertyNamingStrategy.LowerCaseWithUnderscoresStrategy());
-        String hostReportAsJson = Resources.toString(Resources.getResource("RHEL_Manifest.json"), Charsets.UTF_8);
+        String hostReportAsJson = Resources.toString(Resources.getResource("RHELManifest.json"), Charsets.UTF_8);
         hostManifest = mapper.readValue(hostReportAsJson, HostManifest.class);
-        String tagCerAsJson = Resources.toString(Resources.getResource("AssetTag_Certificate.json"), Charsets.UTF_8);
+        String tagCerAsJson = Resources.toString(Resources.getResource("AssetTagCertificate.json"), Charsets.UTF_8);
         tagCer= mapper.readValue(tagCerAsJson, X509AttributeCertificate.class);                
         
     }
@@ -84,7 +84,7 @@ public class PlatformFlavorTest {
         assertEquals(expResult, result);
         
         List<String> actualFlavor = platformFlavor.getFlavorPart(PLATFORM.getValue());
-        String expectedFlavor = Resources.toString(Resources.getResource("RHEL_BIOS_TPM12.json"),Charset.defaultCharset());
+        String expectedFlavor = Resources.toString(Resources.getResource("RHELPlatformTPM12.json"),Charset.defaultCharset());
         System.out.println("Actual PLATFORM flavor is *** " + actualFlavor.get(0) + " ***");
         System.out.println("Expected PLATFORM flavor is ***" + expectedFlavor + "***");
         String actualIdValue = actualFlavor.get(0).substring(actualFlavor.get(0).indexOf("\"id\":")+("\"id\":").length(), (actualFlavor.get(0).indexOf("\"id\":")+("\"id\":").length()+38));
@@ -106,7 +106,7 @@ public class PlatformFlavorTest {
         assertEquals(expResult, actualResult);
                 
         List<String> actualFlavor = platformFlavor.getFlavorPart(ASSET_TAG.getValue());
-        String expectedFlavor = Resources.toString(Resources.getResource("RHEL_Asset_Tag_Flavor.json"),Charset.defaultCharset());
+        String expectedFlavor = Resources.toString(Resources.getResource("RHELAssetTagFlavor.json"),Charset.defaultCharset());
         System.out.println("Actual ASSET_TAG flavor is *** " + actualFlavor.get(0) + " ***");
         System.out.println("Expected ASSET_TAG flavor is ***" + expectedFlavor + "***");
         String actualIdValue = actualFlavor.get(0).substring(actualFlavor.get(0).indexOf("\"id\":")+("\"id\":").length(), (actualFlavor.get(0).indexOf("\"id\":")+("\"id\":").length()+38));
