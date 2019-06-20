@@ -43,6 +43,7 @@ public class PlatformFlavorFactory {
                         return new RHELPlatformFlavor(hostManifest, tagCertificate);
                     case "WINDOWS":
                     case "MICROSOFT WINDOWS SERVER 2016 DATACENTER":
+                    case "MICROSOFT WINDOWS SERVER 2016 STANDARD":
                         return new WindowsPlatformFlavor(hostManifest, tagCertificate);
                     case "VMWARE ESXI":
                         return new ESXPlatformFlavor(hostManifest, tagCertificate);
