@@ -343,8 +343,8 @@ public class RHELPlatformFlavor extends PlatformFlavor {
     private List<String> getDefaultSoftwareFlavor() throws PlatformFlavorException {
         try {
             List<String> softwareFlavors = new ArrayList();
-            if (hostManifest.getPcrManifest() != null && hostManifest.getPcrManifest().getMeasurementXmls() != null &&
-                    !hostManifest.getPcrManifest().getMeasurementXmls().isEmpty()) {
+            if (hostManifest.getPcrManifest() != null && hostManifest.getMeasurementXmls() != null &&
+                    !hostManifest.getMeasurementXmls().isEmpty()) {
                 List<String> measurementXmls = getDefaultMeasurement();
                 if(measurementXmls.size() > 0) {
                     for(String measurementXml : measurementXmls) {
@@ -361,7 +361,7 @@ public class RHELPlatformFlavor extends PlatformFlavor {
 
     private List<String> getDefaultMeasurement() throws JAXBException, IOException, XMLStreamException {
         List<String> measurementXmlCollection = new ArrayList();
-        for (String measurementXml : hostManifest.getPcrManifest().getMeasurementXmls()) {
+        for (String measurementXml : hostManifest.getMeasurementXmls()) {
             Measurement measurement = MeasurementUtils.parseMeasurementXML(measurementXml);
             if(measurement.getLabel().contains(SoftwareFlavorPrefix.DEFAULT_APPLICATION_FLAVOR_PREFIX.getValue())|| 
                     measurement.getLabel().contains(SoftwareFlavorPrefix.DEFAULT_WORKLOAD_FLAVOR_PREFIX.getValue())) {
