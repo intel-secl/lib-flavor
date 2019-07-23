@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.*;
 
 import static com.intel.mtwilson.core.flavor.common.FlavorPart.SOFTWARE;
+import static com.intel.mtwilson.core.flavor.common.PlatformFlavorUtil.getSignedFlavorList;
 
 
 /**
@@ -47,6 +48,12 @@ public class SoftwareFlavor extends PlatformFlavor {
         Meta flavorMeta = PlatformFlavorUtil.getMetaSectionDetails(null,null, measurement, SOFTWARE, null);
         Flavor flavor = new Flavor(flavorMeta, null, null, null, null, software);
         return Flavor.serialize(flavor);
+    }
+
+    @Override
+    public List<SignedFlavor> getFlavorPartWithSignature(String name) throws Exception {
+        List<String> flavors = getFlavorPart(name);
+        return getSignedFlavorList(flavors);
     }
 
     @Override

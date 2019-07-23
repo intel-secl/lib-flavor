@@ -12,6 +12,7 @@ import com.intel.mtwilson.core.common.model.HostManifest;
 import com.intel.mtwilson.core.common.model.HostInfo;
 import com.intel.mtwilson.core.common.model.PcrIndex;
 import com.intel.mtwilson.core.common.tag.model.X509AttributeCertificate;
+import com.intel.mtwilson.core.flavor.model.SignedFlavor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.intel.mtwilson.core.flavor.common.FlavorPart.*;
+import static com.intel.mtwilson.core.flavor.common.PlatformFlavorUtil.getSignedFlavorList;
 
 /**
  *
@@ -49,6 +51,12 @@ public class WindowsPlatformFlavor extends PlatformFlavor {
     }
 
     @Override
+    public List<SignedFlavor> getFlavorPartWithSignature(String name) throws Exception {
+        List<String> flavors = getFlavorPart(name);
+        return getSignedFlavorList(flavors);
+    }
+
+    @Override
     public List<String> getFlavorPart(String name) throws Exception {
         try {
             String flavorPartName = name.toUpperCase();
@@ -60,7 +68,6 @@ public class WindowsPlatformFlavor extends PlatformFlavor {
                 case ASSET_TAG:
                     return getAssetTagFlavor();
                 case HOST_UNIQUE:
-//                    return getHostUniqueFlavor();
                     throw new PlatformFlavorException(ErrorCode.FLAVOR_PART_CANNOT_BE_SUPPORTED, "Windows does not support HOST_UNIQUE flavor part");
                 default:
                     throw new PlatformFlavorException(ErrorCode.UNKNOWN_FLAVOR_PART, "Unknown flavor part specified by the user");
