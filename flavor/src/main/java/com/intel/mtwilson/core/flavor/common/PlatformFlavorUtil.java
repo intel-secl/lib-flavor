@@ -29,7 +29,6 @@ import org.apache.commons.lang3.StringUtils;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 
-import static com.intel.mtwilson.configuration.ConfigurationFactory.getConfiguration;
 import static com.intel.mtwilson.core.flavor.model.Meta.ISL_MEASUREMENT_SCHEMA;
 
 /**
@@ -38,9 +37,6 @@ import static com.intel.mtwilson.core.flavor.model.Meta.ISL_MEASUREMENT_SCHEMA;
 public class PlatformFlavorUtil {
 
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(PlatformFlavorUtil.class);
-    private static final String FLAVOR_SIGNER_KEYSTORE_FILE = "flavor.signer.keystore.file";
-    private static final String FLAVOR_SIGNER_KEYSTORE_PASSWORD = "flavor.signer.keystore.password";
-    private static final String FLAVOR_SIGNING_KEY_ALIAS = "flavor.signing.key.alias";
 
     public static Meta getMetaSectionDetails(HostInfo hostDetails, X509AttributeCertificate tagCertificate, String xmlMeasurement, FlavorPart flavorPartName, String vendor) throws JAXBException, IOException, XMLStreamException {
         Meta meta = new Meta();
@@ -434,29 +430,23 @@ public class PlatformFlavorUtil {
         return dateFormat.format(cal.getTime());
     }
 
-    public static List<SignedFlavor> getSignedFlavorList(List<String> flavors) throws Exception {
-        List<SignedFlavor> flavorAndSignature = new ArrayList<>();
+    public static List<SignedFlavor> getSignedFlavorList(List<String> flavors, PrivateKey flavorSigningPrivateKey) throws Exception {
+        List<SignedFlavor> signedFlavors = new ArrayList<>();
         ObjectMapper mapper = JacksonObjectMapperProvider.createDefaultMapper();
-        KeyStore keystore = KeyStore.getInstance("PKCS12", "SunJSSE");
-        keystore.load(new FileInputStream(getConfiguration().get(FLAVOR_SIGNER_KEYSTORE_FILE)), getConfiguration().get(FLAVOR_SIGNER_KEYSTORE_PASSWORD).toCharArray());
-        Key privateKey = keystore.getKey(getConfiguration().get(FLAVOR_SIGNING_KEY_ALIAS, "flavor-signing-key"), getConfiguration().get(FLAVOR_SIGNER_KEYSTORE_PASSWORD).toCharArray());
         Signature signature = Signature.getInstance("SHA384withRSA");
-        signature.initSign((PrivateKey)privateKey);
+        signature.initSign(flavorSigningPrivateKey);
         for (String flavorString : flavors) {
             signature.update(flavorString.getBytes());
             Flavor flavor = mapper.readValue(flavorString, Flavor.class);
-            flavorAndSignature.add(new SignedFlavor(flavor, Base64.getEncoder().encodeToString(signature.sign())));
+            signedFlavors.add(new SignedFlavor(flavor, Base64.getEncoder().encodeToString(signature.sign())));
         }
-        return flavorAndSignature;
+        return signedFlavors;
     }
 
-    public static SignedFlavor getSignedFlavor(String flavorString) throws Exception {
+    public static SignedFlavor getSignedFlavor(String flavorString, PrivateKey flavorSigningPrivateKey) throws Exception {
         ObjectMapper mapper = JacksonObjectMapperProvider.createDefaultMapper();
-        KeyStore keystore = KeyStore.getInstance("PKCS12", "SunJSSE");
-        keystore.load(new FileInputStream(getConfiguration().get(FLAVOR_SIGNER_KEYSTORE_FILE)), getConfiguration().get(FLAVOR_SIGNER_KEYSTORE_PASSWORD).toCharArray());
-        Key privateKey = keystore.getKey(getConfiguration().get(FLAVOR_SIGNING_KEY_ALIAS, "flavor-signing-key"), getConfiguration().get(FLAVOR_SIGNER_KEYSTORE_PASSWORD).toCharArray());
         Signature signature = Signature.getInstance("SHA384withRSA");
-        signature.initSign((PrivateKey)privateKey);
+        signature.initSign(flavorSigningPrivateKey);
         signature.update(flavorString.getBytes());
         Flavor flavor = mapper.readValue(flavorString, Flavor.class);
         return new SignedFlavor(flavor, Base64.getEncoder().encodeToString(signature.sign()));

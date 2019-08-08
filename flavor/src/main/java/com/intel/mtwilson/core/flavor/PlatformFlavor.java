@@ -6,8 +6,11 @@ package com.intel.mtwilson.core.flavor;
 
 import com.intel.mtwilson.core.flavor.model.SignedFlavor;
 
+import java.security.PrivateKey;
 import java.util.Collection;
 import java.util.List;
+
+import static com.intel.mtwilson.core.flavor.common.PlatformFlavorUtil.getSignedFlavorList;
 
 /**
  * 
@@ -35,7 +38,10 @@ public abstract class PlatformFlavor {
      * @since IAT 1.0
      * <pre>testing</pre>
      */
-    public abstract List<SignedFlavor> getFlavorPartWithSignature(String flavorPartName) throws Exception;
+    public List<SignedFlavor> getFlavorPartWithSignature(String flavorPartName, PrivateKey flavorSigningPrivateKey) throws Exception{
+        List<String> flavors = getFlavorPart(flavorPartName);
+        return getSignedFlavorList(flavors, flavorSigningPrivateKey);
+    }
 
     /**
      * Retrieves the list of flavor parts that can be obtained using the getFlavorPart method.

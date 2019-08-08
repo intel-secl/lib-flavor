@@ -12,7 +12,6 @@ import com.intel.mtwilson.core.common.model.HostManifest;
 import com.intel.mtwilson.core.common.model.HostInfo;
 import com.intel.mtwilson.core.common.model.PcrIndex;
 import com.intel.mtwilson.core.common.tag.model.X509AttributeCertificate;
-import com.intel.mtwilson.core.flavor.model.SignedFlavor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,8 +21,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.intel.mtwilson.core.flavor.common.FlavorPart.*;
-import static com.intel.mtwilson.core.flavor.common.PlatformFlavorUtil.getSignedFlavorList;
-
 /**
  *
  * @author ssbangal
@@ -48,12 +45,6 @@ public class WindowsPlatformFlavor extends PlatformFlavor {
 
     public WindowsPlatformFlavor(X509AttributeCertificate tagCertificate) {
         this.tagCertificate = tagCertificate;
-    }
-
-    @Override
-    public List<SignedFlavor> getFlavorPartWithSignature(String name) throws Exception {
-        List<String> flavors = getFlavorPart(name);
-        return getSignedFlavorList(flavors);
     }
 
     @Override

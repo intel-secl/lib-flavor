@@ -7,7 +7,6 @@ package com.intel.mtwilson.core.flavor;
 import com.intel.dcsg.cpg.crypto.DigestAlgorithm;
 import static com.intel.dcsg.cpg.crypto.DigestAlgorithm.SHA1;
 import static com.intel.mtwilson.core.flavor.common.FlavorPart.*;
-import static com.intel.mtwilson.core.flavor.common.PlatformFlavorUtil.getSignedFlavorList;
 
 import com.intel.dcsg.cpg.crypto.Sha1Digest;
 import com.intel.mtwilson.core.flavor.common.*;
@@ -42,12 +41,6 @@ public class ESXPlatformFlavor extends PlatformFlavor {
 
     public ESXPlatformFlavor(X509AttributeCertificate tagCertificate) {
         this.tagCertificate = tagCertificate;
-    }
-
-    @Override
-    public List<SignedFlavor> getFlavorPartWithSignature(String name) throws Exception {
-        List<String> flavors = getFlavorPart(name);
-        return getSignedFlavorList(flavors);
     }
     
     @Override

@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.util.*;
 
 import static com.intel.mtwilson.core.flavor.common.FlavorPart.*;
-import static com.intel.mtwilson.core.flavor.common.PlatformFlavorUtil.getSignedFlavorList;
 
 import com.intel.mtwilson.core.common.model.SoftwareFlavorPrefix;
 /**
@@ -51,13 +50,6 @@ public class RHELPlatformFlavor extends PlatformFlavor {
     public RHELPlatformFlavor(X509AttributeCertificate tagCertificate) {
         this.tagCertificate = tagCertificate;
     }
-
-    @Override
-    public List<SignedFlavor> getFlavorPartWithSignature(String name) throws Exception {
-        List<String> flavors = getFlavorPart(name);
-        return getSignedFlavorList(flavors);
-    }
-
 
     @Override
     public List<String> getFlavorPart(String name) throws Exception {

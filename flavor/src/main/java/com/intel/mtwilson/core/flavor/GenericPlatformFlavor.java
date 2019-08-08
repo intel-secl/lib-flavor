@@ -13,7 +13,6 @@ import com.intel.mtwilson.core.common.tag.model.X509AttributeCertificate;
 import java.util.*;
 
 import static com.intel.mtwilson.core.flavor.common.FlavorPart.ASSET_TAG;
-import static com.intel.mtwilson.core.flavor.common.PlatformFlavorUtil.getSignedFlavorList;
 
 /**
  *
@@ -28,12 +27,6 @@ public class GenericPlatformFlavor extends PlatformFlavor {
     public GenericPlatformFlavor(String vendor, X509AttributeCertificate tagCertificate) {
         this.vendor = vendor;
         this.tagCertificate = tagCertificate;
-    }
-
-    @Override
-    public List<SignedFlavor> getFlavorPartWithSignature(String name) throws Exception {
-        List<String> flavors = getFlavorPart(name);
-        return getSignedFlavorList(flavors);
     }
 
     @Override
