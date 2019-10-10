@@ -37,6 +37,7 @@ public class PlatformFlavorFactory {
             if (hostManifest != null && hostManifest.getHostInfo() != null) {
                 log.info("getPlatformFlavor: creating platform flavor instance for {}", hostManifest.getHostInfo().getOsName());
                 switch (hostManifest.getHostInfo().getOsName().trim().toUpperCase()) {
+                    case "REDHATENTERPRISE":
                     case "REDHATENTERPRISESERVER":
                     case "RHEL":
                     case "UBUNTU":

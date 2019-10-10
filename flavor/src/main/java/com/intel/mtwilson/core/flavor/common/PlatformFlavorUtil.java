@@ -282,6 +282,7 @@ public class PlatformFlavorUtil {
 
         String vendor;
         switch (hostInfo.getOsName().trim().toUpperCase()) {
+            case "REDHATENTERPRISE":
             case "REDHATENTERPRISESERVER":
             case "RHEL":
             case "UBUNTU":
