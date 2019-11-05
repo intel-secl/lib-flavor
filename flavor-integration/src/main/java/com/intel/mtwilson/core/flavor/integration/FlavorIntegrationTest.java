@@ -46,10 +46,10 @@ public class FlavorIntegrationTest {
     }
 
     @Integration
-    public Collection<String> getFlavorPartNames(String hostConnectionString) throws IOException, Exception {
+    public Collection<String> getFlavorPartNames(String hostConnectionString, String aasApiUrl) throws IOException, Exception {
 
         HostConnectorFactory factory = new HostConnectorFactory();
-        HostConnector hostConnector = factory.getHostConnector(hostConnectionString, tlsPolicy);
+        HostConnector hostConnector = factory.getHostConnector(hostConnectionString, aasApiUrl, tlsPolicy);
         HostManifest hostManifest = hostConnector.getHostManifest();
 
         PlatformFlavor platformFlavor = flavorFactory.getPlatformFlavor(hostManifest, null);
@@ -60,12 +60,12 @@ public class FlavorIntegrationTest {
     }
 
     @Integration
-    public void getFlavorParts(String hostConnectionString, Collection<String> flavorParts) throws PlatformFlavorException, MalformedURLException, IOException, Exception {
+    public void getFlavorParts(String hostConnectionString, String aasApiUrl, Collection<String> flavorParts) throws PlatformFlavorException, MalformedURLException, IOException, Exception {
 
         Logger.getLogger(FlavorIntegrationTest.class.getName()).log(Level.INFO, String.format("Flavor parts specified are {%s}", flavorParts.toString()));
 
         HostConnectorFactory factory = new HostConnectorFactory();
-        HostConnector hostConnector = factory.getHostConnector(hostConnectionString, tlsPolicy);
+        HostConnector hostConnector = factory.getHostConnector(hostConnectionString, aasApiUrl, tlsPolicy);
         HostManifest hostManifest = hostConnector.getHostManifest();
 
         PlatformFlavor platformFlavor = flavorFactory.getPlatformFlavor(hostManifest, null);
