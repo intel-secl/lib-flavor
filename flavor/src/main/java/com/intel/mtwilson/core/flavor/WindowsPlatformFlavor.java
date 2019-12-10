@@ -27,7 +27,7 @@ import static com.intel.mtwilson.core.flavor.common.FlavorPart.*;
  */
 public class WindowsPlatformFlavor extends PlatformFlavor {
 
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(RHELPlatformFlavor.class);
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(WindowsPlatformFlavor.class);
     private HostManifest hostManifest;
     private HostInfo hostInfo;
     private X509AttributeCertificate tagCertificate;

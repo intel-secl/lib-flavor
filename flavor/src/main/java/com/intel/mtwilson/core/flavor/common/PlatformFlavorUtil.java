@@ -282,12 +282,6 @@ public class PlatformFlavorUtil {
 
         String vendor;
         switch (hostInfo.getOsName().trim().toUpperCase()) {
-            case "REDHATENTERPRISE":
-            case "REDHATENTERPRISESERVER":
-            case "RHEL":
-            case "UBUNTU":
-                vendor = "INTEL";
-                break;
             case "WINDOWS":
             case "MICROSOFT WINDOWS SERVER 2016 DATACENTER":
             case "MICROSOFT WINDOWS SERVER 2016 STANDARD":
@@ -297,7 +291,7 @@ public class PlatformFlavorUtil {
                 vendor = "VMWARE";
                 break;
             default:
-                vendor = "UNKNOWN";
+                vendor = "INTEL";
         }
         return vendor;
     }

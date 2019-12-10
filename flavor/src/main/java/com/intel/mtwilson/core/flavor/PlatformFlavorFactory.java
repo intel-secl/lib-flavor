@@ -37,11 +37,6 @@ public class PlatformFlavorFactory {
             if (hostManifest != null && hostManifest.getHostInfo() != null) {
                 log.info("getPlatformFlavor: creating platform flavor instance for {}", hostManifest.getHostInfo().getOsName());
                 switch (hostManifest.getHostInfo().getOsName().trim().toUpperCase()) {
-                    case "REDHATENTERPRISE":
-                    case "REDHATENTERPRISESERVER":
-                    case "RHEL":
-                    case "UBUNTU":
-                        return new RHELPlatformFlavor(hostManifest, tagCertificate);
                     case "WINDOWS":
                     case "MICROSOFT WINDOWS SERVER 2016 DATACENTER":
                     case "MICROSOFT WINDOWS SERVER 2016 STANDARD":
@@ -49,13 +44,10 @@ public class PlatformFlavorFactory {
                     case "VMWARE ESXI":
                         return new ESXPlatformFlavor(hostManifest, tagCertificate);
                     default:
-                        throw new PlatformFlavorException(ErrorCode.UN_SUPPORTED_OS, "Operating system on the host system is currently not supported.");
+                        return new RHELPlatformFlavor(hostManifest, tagCertificate);
                 }
             }
             return null;
-
-        } catch (PlatformFlavorException pex) {
-            throw pex;
         } catch (Exception ex) {
             String errorMessage = "Error during determining the type of the target system.";
             log.error(errorMessage, ex);
