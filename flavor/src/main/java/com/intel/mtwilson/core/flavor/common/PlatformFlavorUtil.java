@@ -350,7 +350,10 @@ public class PlatformFlavorUtil {
                             }
                         }
                     }
-                    value.getEvent().removeAll(toExclude);
+                    for (Measurement eventDetails : toExclude) {
+                        log.debug("EXCLUDING module {} - {} for PCR {}", eventDetails.getLabel(), eventDetails.getInfo().get("ComponentName"), key.toString());
+                        value.getEvent().remove(eventDetails);
+                    }
                 }
             }
         }
