@@ -4,6 +4,7 @@
  */
 package com.intel.mtwilson.core.flavor.model;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,6 +23,7 @@ import java.util.Map;
  * 
  * @author ssbangal
  */
+@JsonPropertyOrder({ "meta", "validity", "bios", "hardware", "pcrs", "external", "software"})
 public class Flavor {
     private Meta meta;
     private Validity validity;

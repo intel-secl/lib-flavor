@@ -4,12 +4,15 @@
  */
 package com.intel.mtwilson.core.flavor.model;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.intel.dcsg.cpg.crypto.DigestAlgorithm;
 
 /**
  * 
  * @author ssbangal
  */
+@JsonPropertyOrder({"flavor_part", "source", "label", "ip_address", "bios_name", "bios_version", "os_name", "os_version",
+    "vmm_name", "vmm_version", "tpm_version", "hardware_uuid", "comment", "tboot_installed", "digest_algorithm"})
 public class Description {
     private String flavorPart;
     private String source; // Indicates the source host from which the flavor would be created.

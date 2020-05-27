@@ -8,6 +8,10 @@ package com.intel.mtwilson.core.flavor.model;
  *
  * @author ssbangal
  */
+
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+@JsonPropertyOrder({"schema", "id", "author", "realm", "description", "vendor"})
 public class Meta {
     public static String ISL_MEASUREMENT_SCHEMA = "lib:wml:measurements:1.0";
     private Schema schema;

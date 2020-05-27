@@ -8,6 +8,10 @@ package com.intel.mtwilson.core.flavor.model;
  *
  * @author ddhawale
  */
+
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+@JsonPropertyOrder({"bios_name", "bios_version"})
 public class Bios {
     private String biosName;
     private String biosVersion;

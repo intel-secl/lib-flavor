@@ -4,12 +4,15 @@
  */
 package com.intel.mtwilson.core.flavor.model;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import java.util.List;
 
 /**
  * 
  * @author ssbangal
  */
+@JsonPropertyOrder({"aes_ni", "txt", "tpm", "cbnt", "suefi"})
 public class Feature {
     private AES_NI AES_NI;
     private TXT TXT;

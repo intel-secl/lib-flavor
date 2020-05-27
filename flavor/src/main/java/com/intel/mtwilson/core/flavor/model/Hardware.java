@@ -8,6 +8,10 @@ package com.intel.mtwilson.core.flavor.model;
  * 
  * @author ssbangal
  */
+
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+@JsonPropertyOrder({"vendor", "processor_info", "processor_flags", "feature"})
 public class Hardware {
     private String vendor;
     private String processorInfo;
