@@ -1,3 +1,12 @@
+DISCONTINUATION OF PROJECT
+
+This project will no longer be maintained by Intel.
+
+Intel has ceased development and contributions including, but not limited to, maintenance, bug fixes, new releases, or updates, to this project.  
+
+Intel no longer accepts patches to this project.
+
+If you have an ongoing need to use this project, are interested in independently developing it, or would like to maintain patches for the open source software community, please create your own fork of this project.  
 # Intel<sup>®</sup> Security Libraries for Data Center  - Flavor Library
 #### This library is responsible for extracting the whitelist measurements from the host, which is being used a good known host for verifying against other target systems with similar configuration. These measurements correspond to specific system components and are used as the basis of comparison to generate trust attestations. There are multiple types of flavor including PLATFORM, OS, ASSET_TAG and HOST_UNIQUE.
 
